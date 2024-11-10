@@ -38,13 +38,12 @@ class FlaskBackend:
             return jsonify({'response': 'invalid'})
     
     def check_number(self, sender_number, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log):
-        # TODO: Add logic to handle limited number of messages per time interval e.g. 3 per hour, for each number. The chat log will be used for this.
         # We first need to check if the max_messages_per_hour has been reached for the sender_number. This overrides all other checks, including allow list and black list. 
         if self.get_num_messages(sender_number, chat_log) == max_messages_per_hour: # Will never be above the max_messages per hour, as we will block the number after it reaches the limit.
             return False
-        # Allow list has the highest priority. If a number is in the allow list, it will be allowed to proceed.
-        if sender_number in allow_list:
-            return True
+        # Allow list has the highest priority. If a number is not in the allow list and the allow list is not empty, it will not be allowed to proceed.
+        if (allow_list) and (sender_number not in allow_list):
+            return False 
         # Black list has the second highest priority. If a number is in the black list, it will be blocked, unless it is in the allow list.
         if sender_number in black_listed_numbers:
             return False
