@@ -24,15 +24,17 @@ class FlaskBackend:
             data = request.get_json()
             print(data)
             black_listed_numbers = data['black_listed_numbers'].split(' ')
-            allow_list = data['allow_list'].split(' ')
-            phone_contacts = data['phone_contacts'].split(' ') # if empty, wwe process whether or not the number is in the allow list or black list for all numbers. If not empty, we only process the numbers in the phone contacts list IF block_spam is set to True. 
+            allow_list = data['allow_list'].split(' ') if len(data['allow_list'].strip()) > 0 else [] # Make sure to split the string into a list, only if it's not empty
+            phone_contacts = data['phone_contacts'].split(' ') if len(data['phone_contacts'].strip()) > 0 else [] # if empty, wwe process whether or not the number is in the allow list or black list for all numbers. If not empty, we only process the numbers in the phone contacts list IF block_spam is set to True. 
             block_spam = data['block_spam']
             sender_number = data['sender_number']
             chat_log = data['chat_log']
             max_messages_per_hour = data['max_messages_per_hour']
             
+            validity = self.check_number(sender_number, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log)
+            print(validity)
             # Our logic will go here
-            if self.check_number(sender_number, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log):
+            if validity:
                 return jsonify({'response': 'valid'})
             # We will return a response based on our logic
             return jsonify({'response': 'invalid'})
@@ -41,9 +43,11 @@ class FlaskBackend:
         # We first need to check if the max_messages_per_hour has been reached for the sender_number. This overrides all other checks, including allow list and black list. 
         if self.get_num_messages(sender_number, chat_log) == max_messages_per_hour: # Will never be above the max_messages per hour, as we will block the number after it reaches the limit.
             return False
-        # Allow list has the highest priority. If a number is not in the allow list and the allow list is not empty, it will not be allowed to proceed.
-        if (allow_list) and (sender_number not in allow_list):
-            return False 
+        # Allow list has the highest priority. If a number is in the allow list and the allow list is not empty, it will be allowed to proceed.
+        if (allow_list) and (sender_number in allow_list):
+            return True 
+        elif (allow_list) and (sender_number not in allow_list):
+            return False
         # Black list has the second highest priority. If a number is in the black list, it will be blocked, unless it is in the allow list.
         if sender_number in black_listed_numbers:
             return False
