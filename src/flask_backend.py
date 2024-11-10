@@ -22,6 +22,7 @@ class FlaskBackend:
         @self.app.route('/sms_allow', methods=['POST'])
         def sms_allow():
             data = request.get_json()
+            print(data)
             black_listed_numbers = data['black_listed_numbers'].split(' ')
             allow_list = data['allow_list'].split(' ')
             phone_contacts = data['phone_contacts'].split(' ') # if empty, wwe process whether or not the number is in the allow list or black list for all numbers. If not empty, we only process the numbers in the phone contacts list IF block_spam is set to True. 
@@ -55,7 +56,7 @@ class FlaskBackend:
     
     def get_num_messages(self, number, chat_log):
         # We search how many times the string number occurs in the string chat_log:
-        return chat_log.count(number) 
+        return (chat_log.count(number) if chat_log else 0)
         
 if __name__ == '__main__':
     app = FlaskBackend()
