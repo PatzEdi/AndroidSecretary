@@ -7,7 +7,8 @@ def post_sms_allow(
     phone_contacts=[],
     block_spam=False,
     sender_number='',
-    chat_log='',
+    sender_message='',
+    chat_log=[],
     max_messages_per_hour=5,
     url='http://localhost:4445/sms_allow'
 ):
@@ -35,6 +36,7 @@ def post_sms_allow(
         'phone_contacts': ' '.join(phone_contacts),
         'block_spam': block_spam,
         'sender_number': sender_number,
+        'sender_message': sender_message,
         'chat_log': chat_log,
         'max_messages_per_hour': max_messages_per_hour
     }
@@ -55,8 +57,9 @@ if __name__ == "__main__":
     phone_contacts = []
     block_spam = False 
     sender_number = '+19494126173'
+    sender_message = "Hello, how are you?" # The latest message from the sender
     chat_log = ["+19494126173\nHello, how are you?\n","Example assistant response"] # continue if necessary: "+19494126173\nYes that is fine, thanks."]
-    max_messages_per_hour = 1
+    max_messages_per_hour = 2
 
     # Send the POST request
     response = post_sms_allow(
@@ -65,6 +68,7 @@ if __name__ == "__main__":
         phone_contacts,
         block_spam,
         sender_number,
+        sender_message,
         chat_log,
         max_messages_per_hour
     )

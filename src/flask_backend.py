@@ -1,13 +1,24 @@
 from flask import Flask, request, jsonify
 
-# NOTES: 
-# This file will be runnable both on Android and on a PC. You will be able to choose which one via the Automate workflow.
+"""
+NOTES:
+This file will be runnable both on Android and on a PC. You will be able to choose which one via the Automate workflow.
 
-# Our flask backend will accept a request for each SMS recieved. The request will contain: 1. black listed numbers 2. Sender's number 3. Chat Log (contains both sender numbers and assistant responses) 4. "Allow only" overrides blacklist & only allows sms messages from numbers in this list, if there are any 5. Phone contacts list- optional but useful to avoid triggering the assistant when spam arrives to the phone - blacklist can override this 6. Block spam - a boolean value that ignores numbers that aren't in the phone contacts list 7. Max messages per number per hour - determines the max amount of messages the assistant can respond to a number each hour. If the phone contacts list is empty, then block_spam won't affect anything, as it will be set the False (can't check for spam without a contacts list). Based on this information, we return whether or not a number can proceed to recieving a message from the assitant. We will handle that in the Automate app.
+Our flask backend will accept a request for each SMS received. The request will contain:
+1. Black listed numbers
+2. Sender's number
+3. Chat Log (contains both sender numbers and assistant responses)
+4. "Allow only" overrides blacklist & only allows SMS messages from numbers in this list, if there are any
+5. Phone contacts list - optional but useful to avoid triggering the assistant when spam arrives to the phone - blacklist can override this
+6. Block spam - a boolean value that ignores numbers that aren't in the phone contacts list
+7. Max messages per number per hour - determines the max amount of messages the assistant can respond to a number each hour. If the phone contacts list is empty, then block_spam won't affect anything, as it will be set to False (can't check for spam without a contacts list).
 
-# The point of the Flask backend is that not all of our logic will be in the Automate app workflow, but rather be made in Python. For now, this python backend will receive a request from the Automate app as soon as an SMS message is detected, and return True or False on whether or not the AI Assistant should respond to the message.
+Based on this information, we return whether or not a number can proceed to receiving a message from the assistant. We will handle that in the Automate app.
 
-# We will use the Flask library to create a simple web server that will accept POST requests. We will then use the requests library to send a POST request to the server. We will also use the json library to parse the JSON data that we receive.
+The point of the Flask backend is that not all of our logic will be in the Automate app workflow, but rather be made in Python. For now, this Python backend will receive a request from the Automate app as soon as an SMS message is detected, and return True or False on whether or not the AI Assistant should respond to the message.
+
+We will use the Flask library to create a simple web server that will accept POST requests. We will then use the requests library to send a POST request to the server. We will also use the json library to parse the JSON data that we receive.
+"""
 
 class FlaskBackend:
     def __init__(self):
@@ -28,10 +39,11 @@ class FlaskBackend:
             phone_contacts = data['phone_contacts'].split(' ') if len(data['phone_contacts'].strip()) > 0 else [] # if empty, wwe process whether or not the number is in the allow list or black list for all numbers. If not empty, we only process the numbers in the phone contacts list IF block_spam is set to True. 
             block_spam = data['block_spam']
             sender_number = data['sender_number']
-            chat_log = data['chat_log']
+            sender_message = data['sender_message']
+            chat_log = data['chat_log'] if data['chat_log'] else []
             max_messages_per_hour = data['max_messages_per_hour']
             
-            validity = self.check_number(sender_number, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log)
+            validity = self.check_number(sender_number, sender_message, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log)
             print(validity)
             # Our logic will go here
             if validity:
@@ -39,7 +51,7 @@ class FlaskBackend:
             # We will return a response based on our logic
             return jsonify({'response': 'invalid'})
     
-    def check_number(self, sender_number, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log):
+    def check_number(self, sender_number, sender_message, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log):
         # We first need to check if the max_messages_per_hour has been reached for the sender_number. This overrides all other checks, including allow list and black list. 
         if self.get_num_messages(sender_number, chat_log) == max_messages_per_hour: # Will never be above the max_messages per hour, as we will block the number after it reaches the limit.
             # TODO: Add logic here that will block the number from sending more messages for the next hour. We can do this by creating a dictionary with the key as the number and the value as the time the number was blocked. We will then check if the current time is greater than the time the number was blocked + 1 hour. If it is, we will unblock the number.
@@ -67,7 +79,7 @@ class FlaskBackend:
             # If the message is a sender message, then we process it below:
             count += chat_log[i].count(number)
             
-        return count if chat_log else 0
+        return count
         
 if __name__ == '__main__':
     app = FlaskBackend()
