@@ -98,10 +98,9 @@ class FlaskBackend:
         count = 0
         # We search how many times the string number occurs in the list chat_log:
         for i in range(len(chat_log)):
-            if i % 2: # We ignore the assistant's messages, as we only want to count the sender's messages.
-                continue
-            # If the message is a sender message, then we process it below:
-            count += chat_log[i].count(sender_number)
+            if i % 2 == 0: # We only want the sender's messages, which are at even indices in the list. 
+                # If the message is a sender message, then we process it below:
+                count += 1 if chat_log[i].find(sender_number) == 0 else 0 # We use find, as the number may be in the message, but not at the start of the message. Otherwise, there would be the vulnerability of a number being in the message, but not being the sender's number.
             
         return count
     
@@ -109,7 +108,7 @@ class FlaskBackend:
     def remove_messages(self, sender_number, chat_log):
         i = 0
         while i < len(chat_log):
-            if sender_number in chat_log[i]: 
+            if chat_log[i].find(sender_number) == 0: 
                 chat_log.pop(i)
                 chat_log.pop(i)
                 continue # We skip the increment of i, as we have removed two elements from the list.
@@ -121,7 +120,7 @@ class FlaskBackend:
         sender_chat_log = []
         i = 0
         while i < len(chat_log)-1:
-            if sender_number in chat_log[i]:
+            if chat_log[i].find(sender_number) == 0: # Again, we can't just uses the "in" keyword, as the number may be in the message, but not at the start of the message.
                 sender_chat_log.append(chat_log[i])
                 sender_chat_log.append(chat_log[i+1])
             i += 2
