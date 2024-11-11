@@ -50,13 +50,13 @@ def post_sms_allow(
 
 if __name__ == "__main__":
     # Example data
-    black_listed_numbers = []
-    allow_list = ['+1234567890']
+    black_listed_numbers = ['+19494126173']
+    allow_list = ['+19494126173']
     phone_contacts = []
     block_spam = False 
-    sender_number = '+1234567890'
-    chat_log = '+1234567890\nHello, how are you?\n+1234567890\nYes that is fine, thanks.'
-    max_messages_per_hour = 3
+    sender_number = '+19494126173'
+    chat_log = ["+19494126173\nHello, how are you?\n","Example assistant response"] # continue if necessary: "+19494126173\nYes that is fine, thanks."]
+    max_messages_per_hour = 1
 
     # Send the POST request
     response = post_sms_allow(

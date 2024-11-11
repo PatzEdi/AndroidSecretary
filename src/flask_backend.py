@@ -42,6 +42,7 @@ class FlaskBackend:
     def check_number(self, sender_number, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log):
         # We first need to check if the max_messages_per_hour has been reached for the sender_number. This overrides all other checks, including allow list and black list. 
         if self.get_num_messages(sender_number, chat_log) == max_messages_per_hour: # Will never be above the max_messages per hour, as we will block the number after it reaches the limit.
+            # TODO: Add logic here that will block the number from sending more messages for the next hour. We can do this by creating a dictionary with the key as the number and the value as the time the number was blocked. We will then check if the current time is greater than the time the number was blocked + 1 hour. If it is, we will unblock the number.
             return False
         # Allow list has the highest priority. If a number is in the allow list and the allow list is not empty, it will be allowed to proceed.
         if (allow_list) and (sender_number in allow_list):
@@ -58,8 +59,15 @@ class FlaskBackend:
         return True
     
     def get_num_messages(self, number, chat_log):
-        # We search how many times the string number occurs in the string chat_log:
-        return (chat_log.count(number) if chat_log else 0)
+        count = 0
+        # We search how many times the string number occurs in the list chat_log:
+        for i in range(len(chat_log)):
+            if i % 2 == 0 and chat_log[i] == number: 
+                continue
+            # If the message is a sender message, then we process it below:
+            count += chat_log[i].count(number)
+            
+        return count if chat_log else 0
         
 if __name__ == '__main__':
     app = FlaskBackend()
