@@ -48,10 +48,16 @@ class FlaskBackend:
             max_messages_per_hour = data['max_messages_per_hour']
             
             validity = self.check_number(sender_number, sender_message, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log)
+            print(validity)
             # Our logic will go here
             if validity:
                 # We then get the sender_chat_log, which is just the messages of that sender, and the corresponding assistant message, in the chat_log.
                 sender_chat_log = self.get_sender_chat_log(sender_number, chat_log)
+                print("\nCHAT LOG:")
+                print(chat_log)
+                print("\n\nSENDER CHAT LOG:")
+                print(sender_chat_log)
+
                 return jsonify({'response': 'valid', 'chat_log': chat_log, 'sender_chat_log': sender_chat_log})
             
             # We will return a response based on our logic
@@ -115,7 +121,7 @@ class FlaskBackend:
         sender_chat_log = []
         i = 0
         while i < len(chat_log)-1:
-            if chat_log[i] == sender_number:
+            if sender_number in chat_log[i]:
                 sender_chat_log.append(chat_log[i])
                 sender_chat_log.append(chat_log[i+1])
             i += 2
