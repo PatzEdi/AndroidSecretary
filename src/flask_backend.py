@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-
+import time # To keep track of blocked numbers
 """
 NOTES:
 This file will be runnable both on Android and on a PC. You will be able to choose which one via the Automate workflow.
@@ -21,9 +21,13 @@ We will use the Flask library to create a simple web server that will accept POS
 """
 
 class FlaskBackend:
+    
+    blocked_numbers : dict
+    
     def __init__(self):
         self.app = Flask(__name__)
         self.set_app_routes()
+        self.blocked_numbers  = {}
     def start(self, port=5000, debug=False, host='0.0.0.0'):
         self.app.run(host=host, port=port, debug=debug)
 
@@ -44,17 +48,30 @@ class FlaskBackend:
             max_messages_per_hour = data['max_messages_per_hour']
             
             validity = self.check_number(sender_number, sender_message, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log)
-            print(validity)
             # Our logic will go here
             if validity:
-                return jsonify({'response': 'valid'})
+                # We then get the sender_chat_log, which is just the messages of that sender, and the corresponding assistant message, in the chat_log.
+                sender_chat_log = self.get_sender_chat_log(sender_number, chat_log)
+                return jsonify({'response': 'valid', 'chat_log': chat_log, 'sender_chat_log': sender_chat_log})
+            
             # We will return a response based on our logic
-            return jsonify({'response': 'invalid'})
+            return jsonify({'response': 'invalid'})   
+    
     
     def check_number(self, sender_number, sender_message, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log):
+        # First thing to check is if the number is blocked because it has in the past reached its max messages per hour:
+        if sender_number in self.blocked_numbers:
+            if time.time() < self.blocked_numbers[sender_number] + 3600: # 3600 seconds in an hour
+                return False # If the number is still blocked, we return False.
+            # If 1 hour has passed, we remove the number from the blocked numbers list:
+            del self.blocked_numbers[sender_number] # Remove the number from the blocked numbers list, as it has been an hour since it was blocked.
+                
         # We first need to check if the max_messages_per_hour has been reached for the sender_number. This overrides all other checks, including allow list and black list. 
         if self.get_num_messages(sender_number, chat_log) == max_messages_per_hour: # Will never be above the max_messages per hour, as we will block the number after it reaches the limit.
-            # TODO: Add logic here that will block the number from sending more messages for the next hour. We can do this by creating a dictionary with the key as the number and the value as the time the number was blocked. We will then check if the current time is greater than the time the number was blocked + 1 hour. If it is, we will unblock the number.
+            # WIP: Add logic here that will block the number from sending more messages for the next hour. We can do this by creating a dictionary with the key as the number and the value as the time the number was blocked. We will then check if the current time is greater than the time the number was blocked + 1 hour. If it is, we will unblock the number.
+            self.blocked_numbers[sender_number] = time.time()
+            # We then delete the messages that the number has sent from the chat log, so that the number can start fresh after the hour is up. We will pass the chat log back to Automate, so that it can update the chat log.
+            self.remove_messages(sender_number, chat_log)
             return False
         # Allow list has the highest priority. If a number is in the allow list and the allow list is not empty, it will be allowed to proceed.
         if (allow_list) and (sender_number in allow_list):
@@ -70,17 +87,40 @@ class FlaskBackend:
             
         return True
     
-    def get_num_messages(self, number, chat_log):
+    
+    def get_num_messages(self, sender_number, chat_log):
         count = 0
         # We search how many times the string number occurs in the list chat_log:
         for i in range(len(chat_log)):
-            if i % 2 == 0 and chat_log[i] == number: 
+            if i % 2: # We ignore the assistant's messages, as we only want to count the sender's messages.
                 continue
             # If the message is a sender message, then we process it below:
-            count += chat_log[i].count(number)
+            count += chat_log[i].count(sender_number)
             
         return count
+    
+    # Removes both the sender number's message, and the assistant's message from the chat log, which is right after the sender's message.
+    def remove_messages(self, sender_number, chat_log):
+        i = 0
+        while i < len(chat_log):
+            if sender_number in chat_log[i]: 
+                chat_log.pop(i)
+                chat_log.pop(i)
+                continue # We skip the increment of i, as we have removed two elements from the list.
+            i += 2
+        return chat_log
         
+
+    def get_sender_chat_log(self, sender_number, chat_log):
+        sender_chat_log = []
+        i = 0
+        while i < len(chat_log)-1:
+            if chat_log[i] == sender_number:
+                sender_chat_log.append(chat_log[i])
+                sender_chat_log.append(chat_log[i+1])
+            i += 2
+        return sender_chat_log
+
 if __name__ == '__main__':
     app = FlaskBackend()
     # Start the app:
