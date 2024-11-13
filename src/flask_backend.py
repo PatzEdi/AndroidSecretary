@@ -61,12 +61,12 @@ class FlaskBackend:
                 return jsonify({'response': 'valid', 'chat_log': chat_log, 'sender_chat_log': sender_chat_log})
             
             # We will return a response based on our logic
-            return jsonify({'response': 'invalid'})   
+            return jsonify({'response': 'invalid', 'chat_log': chat_log}) # We may have removed the sender's messages from the chat log, so we will return the chat log back to Automate, so that it can update the chat log. 
     
     
     def check_number(self, sender_number, sender_message, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log):
         # First thing to check is if the number is blocked because it has in the past reached its max messages per hour:
-        if sender_number in self.blocked_numbers:
+        if sender_number in list(self.blocked_numbers.keys()):
             if time.time() < self.blocked_numbers[sender_number] + 3600: # 3600 seconds in an hour
                 return False # If the number is still blocked, we return False.
             # If 1 hour has passed, we remove the number from the blocked numbers list:
