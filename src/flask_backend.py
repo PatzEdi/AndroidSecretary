@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import time # To keep track of blocked numbers
 """
 NOTES:
-This file will be runnable both on Android and on a PC. You will be able to choose which one via the Automate workflow.
+This file is runnable both on Android and on a PC. You will be able to choose which one via the Automate workflow.
 
 Our flask backend will accept a request for each SMS received. The request will contain:
 1. Black listed numbers
@@ -16,8 +16,6 @@ Our flask backend will accept a request for each SMS received. The request will 
 Based on this information, we return whether or not a number can proceed to receiving a message from the assistant. We will handle that in the Automate app.
 
 The point of the Flask backend is that not all of our logic will be in the Automate app workflow, but rather be made in Python. For now, this Python backend will receive a request from the Automate app as soon as an SMS message is detected, and return True or False on whether or not the AI Assistant should respond to the message.
-
-We will use the Flask library to create a simple web server that will accept POST requests. We will then use the requests library to send a POST request to the server. We will also use the json library to parse the JSON data that we receive.
 """
 
 class FlaskBackend:
@@ -27,7 +25,7 @@ class FlaskBackend:
     def __init__(self):
         self.app = Flask(__name__)
         self.set_app_routes()
-        self.blocked_numbers  = {}
+        self.blocked_numbers = {}
     def start(self, port=5000, debug=False, host='0.0.0.0'):
         self.app.run(host=host, port=port, debug=debug)
 
@@ -37,7 +35,7 @@ class FlaskBackend:
         @self.app.route('/sms_allow', methods=['POST'])
         def sms_allow():
             data = request.get_json()
-            print(data)
+            print("\n" + data)
             black_listed_numbers = data['black_listed_numbers'].split(' ')
             allow_list = data['allow_list'].split(' ') if len(data['allow_list'].strip()) > 0 else [] # Make sure to split the string into a list, only if it's not empty
             phone_contacts = data['phone_contacts'].split(' ') if len(data['phone_contacts'].strip()) > 0 else [] # if empty, wwe process whether or not the number is in the allow list or black list for all numbers. If not empty, we only process the numbers in the phone contacts list IF block_spam is set to True. 
@@ -48,15 +46,11 @@ class FlaskBackend:
             max_messages_per_hour = data['max_messages_per_hour']
             
             validity = self.check_number(sender_number, sender_message, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log)
-            print(validity)
+            print(f"\nValid: {validity}")
             # Our logic will go here
             if validity:
                 # We then get the sender_chat_log, which is just the messages of that sender, and the corresponding assistant message, in the chat_log.
                 sender_chat_log = self.get_sender_chat_log(sender_number, chat_log)
-                print("\nCHAT LOG:")
-                print(chat_log)
-                print("\n\nSENDER CHAT LOG:")
-                print(sender_chat_log)
 
                 return jsonify({'response': 'valid', 'chat_log': chat_log, 'sender_chat_log': sender_chat_log})
             
