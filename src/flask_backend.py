@@ -19,19 +19,35 @@ The point of the Flask backend is that not all of our logic will be in the Autom
 """
 
 class FlaskBackend:
-    
+    """
+    Flask backend to handle SMS requests and determine if the AI Assistant should respond.
+    """
     blocked_numbers : dict
     
     def __init__(self):
+        """
+        Initialize the Flask app and set up routes.
+        """
         self.app = Flask(__name__)
         self.set_app_routes()
         self.blocked_numbers = {}
+        
     def start(self, port=5000, debug=False, host='0.0.0.0'):
+        """
+        Start the Flask app.
+        
+        Args:
+            port (int): Port to run the Flask app on.
+            debug (bool): Whether to run the app in debug mode.
+            host (str): Host to run the app on.
+        """
         self.app.run(host=host, port=port, debug=debug)
 
     # Define app routes:
     def set_app_routes(self):
-
+        """
+        Define the routes for the Flask app.
+        """
         @self.app.route('/sms_allow', methods=['POST'])
         def sms_allow():
             data = request.get_json()
@@ -59,6 +75,22 @@ class FlaskBackend:
     
     
     def check_number(self, sender_number, sender_message, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log):
+        """
+        Check if the sender's number is allowed to send a message.
+        
+        Args:
+            sender_number (str): The sender's phone number.
+            sender_message (str): The sender's message.
+            black_listed_numbers (list): List of blacklisted numbers.
+            allow_list (list): List of allowed numbers.
+            phone_contacts (list): List of phone contacts.
+            block_spam (bool): Whether to block spam messages.
+            max_messages_per_hour (int): Maximum messages allowed per number per hour.
+            chat_log (list): Chat log containing messages.
+        
+        Returns:
+            bool: True if the number is allowed, False otherwise.
+        """
         # First thing to check is if the number is blocked because it has in the past reached its max messages per hour:
         if sender_number in list(self.blocked_numbers.keys()):
             if time.time() < self.blocked_numbers[sender_number] + 3600: # 3600 seconds in an hour
@@ -89,6 +121,16 @@ class FlaskBackend:
     
     
     def get_num_messages(self, sender_number, chat_log):
+        """
+        Get the number of messages sent by the sender.
+        
+        Args:
+            sender_number (str): The sender's phone number.
+            chat_log (list): Chat log containing messages.
+        
+        Returns:
+            int: Number of messages sent by the sender.
+        """
         count = 0
         # We search how many times the string number occurs in the list chat_log:
         for i in range(len(chat_log)):
@@ -100,6 +142,16 @@ class FlaskBackend:
     
     # Removes both the sender number's message, and the assistant's message from the chat log, which is right after the sender's message.
     def remove_messages(self, sender_number, chat_log):
+        """
+        Remove messages sent by the sender from the chat log.
+        
+        Args:
+            sender_number (str): The sender's phone number.
+            chat_log (list): Chat log containing messages.
+        
+        Returns:
+            list: Updated chat log with sender's messages removed.
+        """
         i = 0
         while i < len(chat_log):
             if chat_log[i].find(sender_number) == 0: 
@@ -111,6 +163,16 @@ class FlaskBackend:
         
 
     def get_sender_chat_log(self, sender_number, chat_log):
+        """
+        Get the chat log for the sender.
+        
+        Args:
+            sender_number (str): The sender's phone number.
+            chat_log (list): Chat log containing messages.
+        
+        Returns:
+            list: Chat log containing only the sender's messages and corresponding assistant responses.
+        """
         sender_chat_log = []
         i = 0
         while i < len(chat_log)-1:
