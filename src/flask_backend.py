@@ -51,7 +51,7 @@ class FlaskBackend:
         @self.app.route('/sms_allow', methods=['POST'])
         def sms_allow():
             data = request.get_json()
-            print("\n" + data)
+            print("\n" + str(data)) # Let's just print each request we get, so that we can see what we're working with.
             black_listed_numbers = data['black_listed_numbers'].split(' ')
             allow_list = data['allow_list'].split(' ') if len(data['allow_list'].strip()) > 0 else [] # Make sure to split the string into a list, only if it's not empty
             phone_contacts = data['phone_contacts'].split(' ') if len(data['phone_contacts'].strip()) > 0 else [] # if empty, wwe process whether or not the number is in the allow list or black list for all numbers. If not empty, we only process the numbers in the phone contacts list IF block_spam is set to True. 
