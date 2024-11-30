@@ -67,8 +67,8 @@ class FlaskBackend:
             if validity:
                 # We then get the sender_chat_log, which is just the messages of that sender, and the corresponding assistant message, in the chat_log.
                 sender_chat_log = self.get_sender_chat_log(sender_number, chat_log)
-
-                return jsonify({'response': 'valid', 'chat_log': chat_log, 'sender_chat_log': sender_chat_log})
+                sender_num_messages = self.get_num_messages(sender_number, chat_log) # Will be sent to Automate, to then send to the snder, so that they know how many messages they have left for the hour. 
+                return jsonify({'response': 'valid', 'chat_log': chat_log, 'sender_chat_log': sender_chat_log, 'sender_num_messages': sender_num_messages}) # We will return a response based on our logic
             
             # We will return a response based on our logic
             return jsonify({'response': 'invalid', 'chat_log': chat_log}) # We may have removed the sender's messages from the chat log, so we will return the chat log back to Automate, so that it can update the chat log. 
