@@ -14,7 +14,10 @@
 <!-- omit in toc -->
 # AndroidSecretary 
 
-![ASLogo](assets/ASLogo.png)
+<p align="center">
+  <img src="assets/ASLogo.png" alt="ASLogo">
+</p>
+
 <!-- omit in toc -->
 ## **Note:** 
 This project uses [Automate](https://llamalab.com/automate/) to easily access Android API's and create a flow for an AI Assistant. The backend is written in Python using Flask and assistant responses are made with Ollama or OpenAI. Thank you Automate for making this process easier!
