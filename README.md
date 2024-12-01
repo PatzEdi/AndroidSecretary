@@ -6,6 +6,7 @@
 - [Can I run this project on my phone without an external computer?](#can-i-run-this-project-on-my-phone-without-an-external-computer)
 - [Project Structure](#project-structure)
 - [Known Limitations](#known-limitations)
+- [Tested LLM Models](#tested-llm-models)
 - [Resources](#resources)
 - [License](#license)
 - [Contributing](#contributing)
@@ -23,6 +24,8 @@ This project uses [Automate](https://llamalab.com/automate/) to easily access An
 ## DEMO
 
 https://github.com/user-attachments/assets/5fc198e6-d253-4e33-b1c7-203c4fba1a2b
+
+*The responses in the demo were gathered using Ollama and llama3.1 on an M1 Macbook Air. It works very well even with the 8b model!*
 
 Sorry for the small backend text, I wanted to make the two videos synchronized so I put them together.
 
@@ -53,6 +56,10 @@ Checkout out the [setup & usage process](SETUP.md) to get started!
 As of now, there is only one know limitation to how this works, which may be added as a feature later on (although, I will quickly state here that it would require some restructuring of the project, as the Flask backend would do more of the work than it does now, as explained in the [setup & usage process](SETUP.md)).
 1. **AndroidSecretary can't process more than one response at a time.** In other words, if one message is still being processed, and another message comes in at the same time, then it will not register the second message. Each process of the message must finish for the Automate flow to detect a second incoming message, but since the chat_log is handled by the Automate app in conjunction with the Flask backend, simply duplicating or having various instances of the Automate flow would not work, as the chat_logs would be disjoint/unrelated between the two flows, leading to improper handling of message validation.
 
+## Tested LLM Models
+1. Llama3.1 with Ollama has been tested. The 8B parameter works just fine, so higher parameter models would work as well.
+2. For OpenAI usage, GPT-4 is unfortunately better than gpt-3.5-turbo for this, which is costly. I have tried gpt-3.5-turbo, but it does not give reliable responses and sometimes misses important context. Perhaps there are other OpenAI models that are cheaper than GPT-4 that work well. If there are, feel free to create an issue!
+
 ## Resources
 - [Automate](https://llamalab.com/automate/)
 - [Flask](https://flask.palletsprojects.com/en/2.0.x/)
@@ -66,5 +73,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contributing
 If you would like to contribute to this project, feel free to fork the project and make a pull request. I will review the pull request and merge it if it fits the project. If you have any questions, feel free to open an issue.
+
+Also, to make sure everything works fine, run the unittests :)
 
 [^ Back To Top ^](#androidsecretary)
