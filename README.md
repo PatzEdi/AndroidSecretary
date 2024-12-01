@@ -22,10 +22,7 @@ This project uses [Automate](https://llamalab.com/automate/) to easily access An
 
 ## DEMO
 
-<video width="600" controls>
-  <source src="assets/ASdemo.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+https://github.com/user-attachments/assets/5fc198e6-d253-4e33-b1c7-203c4fba1a2b
 
 Sorry for the small backend text, I wanted to make the two videos synchronized so I put them together.
 
