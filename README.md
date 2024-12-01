@@ -1,5 +1,6 @@
 <!-- omit in toc -->
 # Table of Contents
+- [DEMO](#demo)
 - [Setup \& Usage](#setup--usage)
 - [Features](#features)
 - [Can I run this project on my phone without an external computer?](#can-i-run-this-project-on-my-phone-without-an-external-computer)
@@ -18,6 +19,15 @@
 This project uses [Automate](https://llamalab.com/automate/) to easily access Android API's and create a flow for an AI Assistant. The backend is written in Python using Flask and assistant responses are made with Ollama or OpenAI. Thank you Automate for making this process easier!
 
 **ALSO** this project is still in its early stages. I plan to develop it further, but not at the fastest pace as I am working on bigger projects right now. I take no responsibility for any damage conducted by this tool. It is strictly for education purposes only.
+
+## DEMO
+
+<video width="600" controls>
+  <source src="assets/ASdemo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+Sorry for the small backend text, I wanted to make the two videos synchronized so I put them together.
 
 ## Setup & Usage
 Checkout out the [setup & usage process](SETUP.md) to get started!
