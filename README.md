@@ -20,9 +20,9 @@
 
 <!-- omit in toc -->
 ## **Note:** 
-This project uses [Automate](https://llamalab.com/automate/) to easily access Android API's and create a flow for an AI Assistant. The backend is written in Python using Flask and assistant responses are made with Ollama or OpenAI. Thank you Automate for making this process easier!
+This project uses [Automate](https://llamalab.com/automate/) to easily access Android APIs and create a flow for an AI Assistant. The backend is written in Python using Flask and assistant responses are made with Ollama or OpenAI. Thank you Automate for making this process easier!
 
-**ALSO** this project is still in its early stages. I plan to develop it further, but not at the fastest pace as I am working on bigger projects right now. I take no responsibility for any damage conducted by this tool. It is strictly for education purposes only.
+**ALSO** this project is still in its early stages. I plan to develop it further, but not at the fastest pace as I am working on bigger projects right now. I take no responsibility for any damage conducted by this tool. It is strictly for educational purposes only.
 
 ## DEMO
 
@@ -79,4 +79,4 @@ If you would like to contribute to this project, feel free to fork the project a
 
 Also, to make sure everything works fine, run the unittests :)
 
-[^ Back To Top ^](#androidsecretary)
+[^ Back To Top ^](#table-of-contents)
