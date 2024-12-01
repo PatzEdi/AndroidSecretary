@@ -58,7 +58,7 @@ class FlaskBackend:
             block_spam = data['block_spam']
             sender_number = data['sender_number']
             sender_message = data['sender_message']
-            chat_log = data['chat_log'] if data['chat_log'] else []
+            chat_log = data['chat_log'] if data['chat_log'] else [] # NOTE: We need to determine if client and backend needing each other is better. Perhaps, backend should only handle chat_log and other memory...We will see!
             max_messages_per_hour = data['max_messages_per_hour']
             
             validity = self.check_number(sender_number, sender_message, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log)
@@ -106,9 +106,9 @@ class FlaskBackend:
             self.remove_messages(sender_number, chat_log)
             return False
         # Allow list has the highest priority. If a number is in the allow list and the allow list is not empty, it will be allowed to proceed.
-        if (allow_list) and (sender_number in allow_list):
+        if (allow_list) and (sender_number in allow_list): # This if block is to override the blacklist
             return True 
-        elif (allow_list) and (sender_number not in allow_list):
+        elif (allow_list) and (sender_number not in allow_list): # We add this to make sure that the nums in the allow list are allowed, and the rest are blocked.
             return False
         # Black list has the second highest priority. If a number is in the black list, it will be blocked, unless it is in the allow list.
         if sender_number in black_listed_numbers:
@@ -186,4 +186,3 @@ if __name__ == '__main__':
     app = FlaskBackend()
     # Start the app:
     app.start(port=4445)
-
