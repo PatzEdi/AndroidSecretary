@@ -27,7 +27,7 @@ class TestFlaskBackend(unittest.TestCase):
             sender_message="Test",
             black_listed_numbers=["+1234567890"],
             allow_list=[],
-            phone_contacts=[],
+            sender_is_spam=False,
             block_spam=False,
             max_messages_per_hour=5,
             chat_log=[]
@@ -40,7 +40,7 @@ class TestFlaskBackend(unittest.TestCase):
             sender_message="Test",
             black_listed_numbers=["+1234567890"],  # Even if blacklisted
             allow_list=["+1234567890"],
-            phone_contacts=[],
+            sender_is_spam=False,
             block_spam=False,
             max_messages_per_hour=5,
             chat_log=[]
@@ -67,7 +67,7 @@ class TestFlaskBackend(unittest.TestCase):
             sender_message="Test",
             black_listed_numbers=[],
             allow_list=[],
-            phone_contacts=[],
+            sender_is_spam=False,
             block_spam=False,
             max_messages_per_hour=5,
             chat_log=chat_log
@@ -75,18 +75,32 @@ class TestFlaskBackend(unittest.TestCase):
         self.assertFalse(result)
         self.assertIn("+1234567890", self.backend.blocked_numbers)
 
-    def test_block_spam_with_contacts(self):
+    def test_block_spam_is_spam(self):
         result = self.backend.check_number(
             sender_number="+1234567890",
             sender_message="Test",
             black_listed_numbers=[],
             allow_list=[],
-            phone_contacts=["+9876543210"],  # Number not in contacts
+            sender_is_spam=True,  # Message is from a spam sender
             block_spam=True,
             max_messages_per_hour=5,
             chat_log=[]
         )
         self.assertFalse(result)
+
+    # Let's also create a test for the block spam that should accept the message
+    def test_block_spam_is_not_spam(self):
+        result = self.backend.check_number(
+            sender_number="+1234567890",
+            sender_message="Test",
+            black_listed_numbers=[],
+            allow_list=[],
+            sender_is_spam=False,  # Message is not from a spam sender 
+            block_spam=True,
+            max_messages_per_hour=5,
+            chat_log=[]
+        )
+        self.assertTrue(result)
 
 if __name__ == '__main__':
     unittest.main()

@@ -9,6 +9,7 @@ Our flask backend will accept a request for each SMS received. The request will 
 2. Sender's number
 3. Chat Log (contains both sender numbers and assistant responses)
 4. "Allow only" overrides blacklist & only allows SMS messages from numbers in this list, if there are any
+# TODO: Refactor notes throughout the code so that phone contacts is not a list, rather replaced with is_sender_spam, a boolean value
 5. Phone contacts list - optional but useful to avoid triggering the assistant when spam arrives to the phone - blacklist can override this
 6. Block spam - a boolean value that ignores numbers that aren't in the phone contacts list
 7. Max messages per number per hour - determines the max amount of messages the assistant can respond to a number each hour. If the phone contacts list is empty, then block_spam won't affect anything, as it will be set to False (can't check for spam without a contacts list).
@@ -52,16 +53,16 @@ class FlaskBackend:
         def sms_allow():
             data = request.get_json()
             print("\n" + str(data)) # Let's just print each request we get, so that we can see what we're working with.
-            black_listed_numbers = data['black_listed_numbers'].split(' ')
+            black_listed_numbers = data['black_listed_numbers'].split(' ') # TODO Check if handling lists is necessary like we did below or not...
             allow_list = data['allow_list'].split(' ') if len(data['allow_list'].strip()) > 0 else [] # Make sure to split the string into a list, only if it's not empty
-            phone_contacts = data['phone_contacts'].split(' ') if len(data['phone_contacts'].strip()) > 0 else [] # if empty, wwe process whether or not the number is in the allow list or black list for all numbers. If not empty, we only process the numbers in the phone contacts list IF block_spam is set to True. 
+            sender_is_spam = data['sender_is_spam'] # This is a boolean value passed by Automate. Automate searches for the phone contacts and determines if the sender is in them
             block_spam = data['block_spam']
             sender_number = data['sender_number']
             sender_message = data['sender_message']
             chat_log = data['chat_log'] if data['chat_log'] else [] # NOTE: We need to determine if client and backend needing each other is better. Perhaps, backend should only handle chat_log and other memory...We will see!
             max_messages_per_hour = data['max_messages_per_hour']
             
-            validity = self.check_number(sender_number, sender_message, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log)
+            validity = self.check_number(sender_number, sender_message, black_listed_numbers, allow_list, sender_is_spam, block_spam, max_messages_per_hour, chat_log)
             print(f"\nValid: {validity}")
             # Our logic will go here
             if validity:
@@ -74,7 +75,8 @@ class FlaskBackend:
             return jsonify({'response': 'invalid', 'chat_log': chat_log}) # We may have removed the sender's messages from the chat log, so we will return the chat log back to Automate, so that it can update the chat log. 
     
     
-    def check_number(self, sender_number, sender_message, black_listed_numbers, allow_list, phone_contacts, block_spam, max_messages_per_hour, chat_log):
+    def check_number(self, sender_number, sender_message, black_listed_numbers, allow_list, sender_is_spam, block_spam, max_messages_per_hour, chat_log):
+        # TODO: Check if sender_message is needed here! Perhaps in the future if Flask backend is assigned the most work (as described in setup and usage)
         """
         Check if the sender's number is allowed to send a message.
         
@@ -108,13 +110,14 @@ class FlaskBackend:
         # Allow list has the highest priority. If a number is in the allow list and the allow list is not empty, it will be allowed to proceed.
         if (allow_list) and (sender_number in allow_list): # This if block is to override the blacklist
             return True 
-        elif (allow_list) and (sender_number not in allow_list): # We add this to make sure that the nums in the allow list are allowed, and the rest are blocked.
+        if (allow_list) and (sender_number not in allow_list): # We add this to make sure that the nums in the allow list are allowed, and the rest are blocked.
             return False
         # Black list has the second highest priority. If a number is in the black list, it will be blocked, unless it is in the allow list.
         if sender_number in black_listed_numbers:
             return False
+        # TODO: We need to change the logic here to handle the boolean value instead of the old list interpretation. Perhaps already done? Check!
         # If the phone contacts list is not empty, we will only allow numbers in the phone contacts list to proceed, if block_spam is set to True, unless they are in the allow list or black list.
-        if block_spam and phone_contacts and sender_number not in phone_contacts:
+        if block_spam and sender_is_spam: 
             return False
             
         return True

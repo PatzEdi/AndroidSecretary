@@ -1,5 +1,9 @@
 # Setup & Usage
 *Please read this document carefully. Missing even one step may result in errors.*
+
+## Prerequisities
+**Here we will add prerequisites before setting up/using**
+
 ## Automate
 1. First, install the [Automate](https://llamalab.com/automate/) app on your Android device. This app allows you to create flows that can interact with Android APIs.
 2. Then, import the flow linked in the releases page of Github here, into the Automate app.
@@ -42,3 +46,6 @@ Optionally, you can run the provided script to run the servers in a tmux session
 Use the `tmux_server_launcher.sh` script to start the Flask server and Ollama server in a tmux session (must have tmux installed, of course ollama as well) Of course, you can also do these separately if you wish, and the script is only there for convenience.
 **Note**: If using this tmux launcher script, you must define the FLASK_BACKEND_PATH to the absolute path of the flask_backend.py file.
 
+## Customization Instructions
+
+Here we will add the instructions to change Automate variables. Also, here we will explain things such as how lists, such as the allow list, need to have elements separated by a space.
