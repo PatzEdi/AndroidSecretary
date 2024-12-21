@@ -1,4 +1,15 @@
 <!-- omit in toc -->
+# AndroidSecretary 
+
+<p align="center">
+  <img src="assets/ASLogo.png" alt="ASLogo">
+</p>
+
+<p align="center">
+  <i>Your personal, context-aware AI SMS secretary for Android</i>
+</p>
+
+<!-- omit in toc -->
 # Table of Contents
 - [DEMO](#demo)
 - [Setup \& Usage](#setup--usage)
@@ -8,15 +19,8 @@
 - [Known Limitations](#known-limitations)
 - [Tested LLM Models](#tested-llm-models)
 - [Resources](#resources)
-- [License](#license)
 - [Contributing](#contributing)
-
-<!-- omit in toc -->
-# AndroidSecretary 
-
-<p align="center">
-  <img src="assets/ASLogo.png" alt="ASLogo">
-</p>
+- [License](#license)
 
 <!-- omit in toc -->
 > [!NOTE]
@@ -73,12 +77,12 @@ As of now, there are only a few known limitations to how this works. The biggest
 
 If you like AndroidSecretary, make sure to give it a star! ⭐️
 
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Contributing
 If you would like to contribute to this project, feel free to fork the project and make a pull request. I will review the pull request and merge it if it fits the project. If you have any questions, feel free to open an issue.
 
 Also, to make sure everything works fine, run the unittests :)
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 [^ Back To Top ^](#table-of-contents)
