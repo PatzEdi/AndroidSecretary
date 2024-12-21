@@ -39,9 +39,11 @@ The Flask backend accepts POST requests with the following data:
 
 The backend returns whether the assistant should respond to the message, and even returns the chat_log (and the sender_chat_log if the number passes). We send the chat_log because Automate updates it, in case the Flask backend updates it by removing messages of a blocked number that has sent the max amount of messages per hour.
 
-> [!NOTE] In case you are wondering why the Flask backend doesn't handle everything, including the request to the LLM provider, I still need to decide whether or not the Flask backend and the Automate flow should have such a relationship. As of now, the Automate flow contributes to handling the chat_log in addition to the LLM response, which may be more convenient for some, as when the flow is stopped, the chat_log is not saved on the backend but rather reset. If this is a problem, the relationship will be changed so that the Flask backend does more of the work than it does now, thus leading to a simpler Automate flow.
+> [!NOTE] 
+> In case you are wondering why the Flask backend doesn't handle everything, including the request to the LLM provider, I still need to decide whether or not the Flask backend and the Automate flow should have such a relationship. As of now, the Automate flow contributes to handling the chat_log in addition to the LLM response, which may be more convenient for some, as when the flow is stopped, the chat_log is not saved on the backend but rather reset. If this is a problem, the relationship will be changed so that the Flask backend does more of the work than it does now, thus leading to a simpler Automate flow.
 
-> [!CAUTION] If the Automate flow is terminated, but then restarted while the backend is still running, chat logs will be reset. This is for convenience, as if you want to change something on the Automate workflow, you can do it quickly without having to access the backend. Also, it is assumed that once you enter the phone, you are actually available to respond to your messages.
+> [!CAUTION] 
+> If the Automate flow is terminated, but then restarted while the backend is still running, chat logs will be reset. This is for convenience, as if you want to change something on the Automate workflow, you can do it quickly without having to access the backend. Also, it is assumed that once you enter the phone, you are actually available to respond to your messages.
 
 ## Optional tmux launch script
 Optionally, you can run the provided script to run the servers in a tmux session, side-by-side. This is for convenience, and you can also run the servers separately if you wish.
@@ -52,7 +54,8 @@ Use the `tmux_server_launcher.sh` script to start the Flask server and Ollama se
 
 ### Variables in Automate Flow
 
-> [!NOTE] All of the variables that you can set are located on top of the Automate flow, separated from the rest of the logic. However, here they are listed as well:
+> [!NOTE] 
+> All of the variables that you can set are located on top of the Automate flow, separated from the rest of the logic. However, here they are listed as well:
 
 Important Variables (these should NOT be optional, so please fill them out when setting up the flow)
 
@@ -70,7 +73,8 @@ Important Variables (these should NOT be optional, so please fill them out when 
 4. `ALLOWLIST`: These are the numbers that are **only allowed** for the assistant to respond. Allow list overrides everything, except for the max messages per hour per person limit. If you want other things such as block spam or the blacklist to work, then make sure your allow list is empty.
 5. `BLACKLISTNUMBERS`: These are the numbers that you do not want the assistant to respond to. However, if a number in the blacklist is in the allow list, it will be allowed.
 
-> [!NOTE] For the block spam feature to work, you must provide contact permissions for Automate. Otherwise, it will not be able to find who isn't or who is a contact.
+> [!NOTE] 
+> For the block spam feature to work, you must provide contact permissions for Automate. Otherwise, it will not be able to find who isn't or who is a contact.
 
 ### Number List Formatting
 When entering numbers in the Automate flow variables:
@@ -91,6 +95,7 @@ The chat log alternates between sender messages and assistant responses:
 - When using Ollama, ensure your machine has sufficient RAM for the chosen model
 - The Flask backend must be running with the Automate flow for this to work correctly.
 
-> [!CAUTION] Please be responsible with this tool. I take no responsibility with what you do. Be cautious when using things such as OpenAI or setting the max messages per hour per user, as they may be subject to costing money when using OpenAI. This project is for educational purposes only!
+> [!CAUTION] 
+> Please be responsible with this tool. I take no responsibility with what you do. Be cautious when using things such as OpenAI or setting the max messages per hour per user, as they may be subject to costing money when using OpenAI. This project is for educational purposes only!
 
 If you find any errors regarding the setup process, please feel free to open an issue!
