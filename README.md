@@ -56,8 +56,10 @@ Checkout out the [setup & usage process](SETUP.md) to get started!
 - `tmux_server_launcher.sh`: Script to launch the Flask server and Ollama server in a tmux session. **Note:** This is strictly optional. If you want to use it, you must have tmux installed, AND you must define the FLASK_BACKEND_PATH to the absolute path of the flask_backend.py file.
 
 ## Known Limitations
-As of now, there is only one know limitation to how this works, which may be added as a feature later on (although, I will quickly state here that it would require some restructuring of the project, as the Flask backend would do more of the work than it does now, as explained in the [setup & usage process](SETUP.md)).
+As of now, there are only a few known limitations to how this works. The biggest one (first one below) may be added as a feature later on (although, I will quickly state here that it would require some restructuring of the project, as the Flask backend would do more of the work than it does now, as explained in the [setup & usage process](SETUP.md)).
+
 1. **AndroidSecretary can't process more than one response at a time.** In other words, if one message is still being processed, and another message comes in at the same time, then it will not register the second message. Each process of the message must finish for the Automate flow to detect a second incoming message, but since the chat_log is handled by the Automate app in conjunction with the Flask backend, simply duplicating or having various instances of the Automate flow would not work, as the chat_logs would be disjoint/unrelated between the two flows, leading to improper handling of message validation.
+2. No RCS support. So far, only SMS messages work. With some modifying of the Automate flow, however, MMS messages may also be supported, although that hasn't been tested. Until Automate will release RCS support, only SMS is indeed supported.
 
 ## Tested LLM Models
 1. Llama3.1 with Ollama has been tested. The 8B parameter works just fine, so higher parameter models would work as well.
