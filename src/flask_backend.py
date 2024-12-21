@@ -51,7 +51,7 @@ class FlaskBackend:
         def sms_allow():
             data = request.get_json()
             print("\n" + str(data)) # Let's just print each request we get, so that we can see what we're working with.
-            black_listed_numbers = data['black_listed_numbers'].split(' ') # TODO: Check if handling lists is necessary like we did below or not...
+            black_listed_numbers = data['black_listed_numbers'].split(' ') # We don't need to check here like we did below, as we don't check if the blacklist is empty or not. 
             allow_list = data['allow_list'].split(' ') if len(data['allow_list'].strip()) > 0 else [] # Make sure to split the string into a list, only if it's not empty
             sender_is_spam = data['sender_is_spam'] # This is a boolean value passed by Automate. Automate searches for the phone contacts and determines if the sender is in them
             block_spam = data['block_spam']
@@ -74,7 +74,7 @@ class FlaskBackend:
     
     
     def check_number(self, sender_number, sender_message, black_listed_numbers, allow_list, sender_is_spam, block_spam, max_messages_per_hour, chat_log):
-        # TODO: Check if sender_message is needed here! Perhaps in the future if Flask backend is assigned the most work (as described in setup and usage)
+        # NOTE: I am aware that the variable sender message is not used here, but it may be used in the future, so I will keep it here for now.
         """
         Check if the sender's number is allowed to send a message.
         
