@@ -21,6 +21,7 @@
 - [Resources](#resources)
 - [Contributing](#contributing)
 - [License](#license)
+- [Many Thanks](#many-thanks)
 
 <!-- omit in toc -->
 > [!NOTE]
@@ -51,7 +52,7 @@ Checkout out the [setup & usage process](SETUP.md) to get started!
    6.  Possibility of doing much more as well!
 
 ## Can I run this project on my phone without an external computer?
-1. **Yes**, you can run the servers (both Flask and Ollama) locally using Termux. Just clone the repo to Termux, install Flask if you havn't in Termux, and you can run the flask_backend.py file. However, the Ollama server may be slow on a phone, and you may need to use OpenAI for better context handling.
+1. **Yes**, you can run the servers (both Flask and Ollama) locally using Termux. Just clone the repo to Termux, install Flask if you haven't in Termux, and you can run the flask_backend.py file. However, the Ollama server may be slow on a phone, and you may need to use OpenAI for better context handling.
 
 ## Project Structure
 
@@ -75,8 +76,6 @@ As of now, there are only a few known limitations to how this works. The biggest
 - [Ollama](https://ollama.ai/)
 - [OpenAI](https://openai.com/)
 
-If you like AndroidSecretary, make sure to give it a star! ⭐️
-
 ## Contributing
 If you would like to contribute to this project, feel free to fork the project and make a pull request. I will review the pull request and merge it if it fits the project. If you have any questions, feel free to open an issue.
 
@@ -85,4 +84,8 @@ Also, to make sure everything works fine, run the unittests :)
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-[^ Back To Top ^](#table-of-contents)
+## Many Thanks
+
+If you like AndroidSecretary, make sure to give it a star! ⭐️
+
+[^ Back To Top ^](#androidsecretary)
