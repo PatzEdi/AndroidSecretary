@@ -9,12 +9,12 @@
 
 ## Automate
 1. First, install the [Automate](https://llamalab.com/automate/) app on your Android device. This app allows you to create flows that can interact with Android APIs.
-2. Then, import the flow linked in the releases page of Github here, into the Automate app.
+2. Then, import the flow (.flo files) linked in the releases page of Github here, into the Automate app.
 3. In the flow, define the **BACKEND_HOST** variable to the IP address of the server running the Flask backend. If you use ollama, this will be the IP address of the computer running the Ollama server as well. If you wanat to use OpenAI instead of Ollama, set USEOPENAI to 1, indicating True. The default port of the backend is 4445.
 
 **If you want to use OpenAI's api instead of Ollama, then you must set the OPENAI_API_KEY variable in the Automate flow to your OpenAI API key, AND enable OpenAI by setting USEOPENAI to 1 in the flow**
 
-### The Automate flow setup is complete! Now, you can run the flask backend, and if you are using ollama, start your ollama server.
+### The Automate flow setup is complete! To customize the flow further, see below under [Customization Instructions](#customization-instructions). Now, you can run the Flask backend, and if you are using Ollama, start your Ollama server.
 
 **Note:** The default model for Ollama in the Automate flow is llama3.1, as that has been the most tested for this project and the best performing. If you want to use a different model, you can manually change the model in the Automate flow. 
 
@@ -69,7 +69,7 @@ Important Variables (these should NOT be optional, so please fill them out when 
 
 1. `MAXMESSAGESPERHOURPERUSER`: Maximum messages a number can send per hour (default: 3)
 2. `USEOPENAI`: 0 for false, 1 for true. If this is enabled, make sure that you have provided an OpenAI API key!
-3. `BLOCKSPAM`: Set to 1 to block numbers not in your contacts
+3. `BLOCKSPAM`: Set to 1 to block numbers not in your contacts (default = 1). If you want to disable, set to 0.
 4. `ALLOWLIST`: These are the numbers that are **only allowed** for the assistant to respond. Allow list overrides everything, except for the max messages per hour per person limit. If you want other things such as block spam or the blacklist to work, then make sure your allow list is empty.
 5. `BLACKLISTNUMBERS`: These are the numbers that you do not want the assistant to respond to. However, if a number in the blacklist is in the allow list, it will be allowed.
 

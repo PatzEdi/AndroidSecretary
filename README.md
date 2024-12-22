@@ -46,13 +46,12 @@ Checkout out the [setup & usage process](SETUP.md) to get started!
    1.  Name your assistant
    2.  Limit the max amount of messages per hour per user 
    3.  Blacklist and allowlist features (allowlist overrides blacklist)
-   4.  Block spam feature (provided you give your list of phone contacts to Automate) 
+   4.  Block spam feature (provided you give phone contact permissions to Automate) 
    5.  Optional reason why you are not available, to let senders briefly know what you are doing.
    6.  Possibility of doing much more as well!
 
 ## Can I run this project on my phone without an external computer?
 1. **Yes**, you can run the servers (both Flask and Ollama) locally using Termux. Just clone the repo to Termux, install Flask if you havn't in Termux, and you can run the flask_backend.py file. However, the Ollama server may be slow on a phone, and you may need to use OpenAI for better context handling.
-
 
 ## Project Structure
 
@@ -63,7 +62,8 @@ Checkout out the [setup & usage process](SETUP.md) to get started!
 As of now, there are only a few known limitations to how this works. The biggest one (first one below) may be added as a feature later on (although, I will quickly state here that it would require some restructuring of the project, as the Flask backend would do more of the work than it does now, as explained in the [setup & usage process](SETUP.md)).
 
 1. **AndroidSecretary can't process more than one response at a time.** In other words, if one message is still being processed, and another message comes in at the same time, then it will not register the second message. Each process of the message must finish for the Automate flow to detect a second incoming message, but since the chat_log is handled by the Automate app in conjunction with the Flask backend, simply duplicating or having various instances of the Automate flow would not work, as the chat_logs would be disjoint/unrelated between the two flows, leading to improper handling of message validation.
-2. No RCS support. So far, only SMS messages work. With some modifying of the Automate flow, however, MMS messages may also be supported, although that hasn't been tested. Until Automate will release RCS support, only SMS is indeed supported.
+2. **No RCS support**. So far, only SMS messages work. With some modifying of the Automate flow, however, MMS messages may also be supported, although that hasn't been tested. Until Automate will release RCS support, only SMS is indeed supported.
+3. **I have not yet tested using the project outside of a local network scope.** It may work, but I have not tried it out yet. Perhaps, it would still work using e.g. ceullar data on the phone, but the host machine would likely need to have an open, public IP, and it would most likely be of use to use OpenAI in that scenario.
 
 ## Tested LLM Models
 1. Llama3.1 with Ollama has been tested. The 8B parameter works just fine, so higher parameter models would work as well.
